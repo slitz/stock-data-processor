@@ -61,9 +61,9 @@ class CSVExporter:
                 # Write records, mapping EODData fields to desired output fields
                 for record in data:
                     row = {
-                        "symbol": record.get("Code", ""),
-                        "date": record.get("Date", ""),
-                        "close": record.get("Close", "")
+                        "symbol": record.get("symbolCode", ""),
+                        "date": record.get("dateStamp", ""),
+                        "close": record.get("close", "")
                     }
                     writer.writerow(row)
 
