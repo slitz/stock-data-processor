@@ -26,7 +26,7 @@ class CSVExporter:
         self,
         exchange: str,
         data: List[Dict[str, Any]],
-        filename: str = None
+        date_stamp: str,
     ) -> str:
         """
         Export stock quote data to a CSV file.
@@ -34,14 +34,12 @@ class CSVExporter:
         Args:
             exchange: Exchange code
             data: List of dictionaries containing stock quote data
-            filename: Custom filename (optional)
+            date_stamp: str,
 
         Returns:
             Path to the created CSV file
         """
-        if not filename:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{exchange}_quotes_{timestamp}.csv"
+        filename = f"{exchange}_quotes_{date_stamp}.csv"
 
         filepath = self.output_dir / filename
 
@@ -77,7 +75,8 @@ class CSVExporter:
 
     def export_exchange_data(
         self,
-        exchange_data: Dict[str, List[Dict[str, Any]]]
+        exchange_data: Dict[str, List[Dict[str, Any]]],
+        date_stamp: str
     ) -> Dict[str, str]:
         """
         Export exchange quote data to CSV files.
@@ -90,6 +89,6 @@ class CSVExporter:
         """
         results = {}
         for exchange, data in exchange_data.items():
-            results[exchange] = self.export_stock_data(exchange, data)
+            results[exchange] = self.export_stock_data(exchange, data, date_stamp)
 
         return results

@@ -97,7 +97,7 @@ Examples:
         exchange_data[exchange] = api_client.get_exchange_data(exchange, date_stamp)
 
     logger.info("Exporting data to CSV...")
-    csv_files = exporter.export_exchange_data(exchange_data)
+    csv_files = exporter.export_exchange_data(exchange_data, date_stamp)
 
     # Log results
     logger.info("Import completed successfully!")
