@@ -1,4 +1,4 @@
-# Stock Data Importer
+# Stock Data Processor
 
 A Python application that imports stock market data from the EODData API and exports it to CSV files.
 
@@ -13,7 +13,7 @@ A Python application that imports stock market data from the EODData API and exp
 ## Project Structure
 
 ```
-stock-data-importer/
+stock-data-processor/
 ├── src/
 │   ├── __init__.py
 │   ├── api_client.py       # API client for fetching stock data
@@ -32,7 +32,7 @@ stock-data-importer/
 
 1. **Clone or download the project:**
    ```bash
-   cd stock-data-importer
+   cd stock-data-processor
    ```
 
 2. **Create a virtual environment (recommended):**
@@ -98,7 +98,7 @@ The application will:
 2. Override date if `--date` parameter is provided
 3. Fetch all stock quotes for the specified exchange(s) from the EODData Quote List endpoint
 4. Export the data to CSV files in the `output/` directory
-5. Log all operations to console and `stock_importer.log`
+5. Log all operations to console and `stock_processor.log`
 
 ## Output
 
@@ -145,7 +145,7 @@ All errors are logged to the console and log file for debugging.
 
 Logs are written to:
 - **Console:** Real-time application output
-- **File:** `stock_importer.log` (created on first run)
+- **File:** `stock_processor.log` (created on first run)
 
 ## License
 
@@ -154,7 +154,7 @@ This project is open source. Feel free to modify and use as needed.
 ## Support
 
 For issues or questions:
-1. Check the log file: `stock_importer.log`
+1. Check the log file: `stock_processor.log`
 2. Verify your API token in `config/settings.json`
 3. Ensure valid exchange codes are used (NASDAQ or NYSE only)
 4. Ensure you have internet connectivity

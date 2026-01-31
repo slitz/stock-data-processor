@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 class CSVExporter:
     """Handles exporting stock data to CSV files"""
 
-    def __init__(self, output_dir: str = "output"):
+    def __init__(self, daily_quotes_directory: str = "data/daily_quotes"):
         """
         Initialize the CSV exporter.
 
         Args:
-            output_dir: Directory where CSV files will be saved
+            daily_quotes_directory: Directory where daily CSV files will be saved
         """
-        self.output_dir = Path(output_dir)
+        self.output_dir = Path(daily_quotes_directory)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def export_stock_data(

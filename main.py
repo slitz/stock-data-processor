@@ -1,4 +1,4 @@
-"""Main entry point for the Stock Data Importer application"""
+"""Main entry point for the Stock Data Processor application"""
 
 import os
 import sys
@@ -8,6 +8,7 @@ from pathlib import Path
 
 from src.api_client import StockAPIClient
 from src.csv_exporter import CSVExporter
+from src.csv_processor import CSVProcessor
 from src.logger import setup_logging
 
 
@@ -46,22 +47,14 @@ Examples:
   python main.py --date 2026-01-20 -v      # Verbose mode
         """
     )
-    parser.add_argument(
-        "--date",
-        type=str,
-        default=None,
-        help="Date for quotes in format YYYY-MM-DD (default: current date)"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose logging (DEBUG level)"
-    )
+    parser.add_argument("--date", type=str, default=None, help="Date for quotes in format YYYY-MM-DD (default: current date)")
+    parser.add_argument("-v", "--verbose",  action="store_true", help="Enable verbose logging (DEBUG level)")
+    parser.add_argument("--concat", action="store_true", help="Concatenate CSV files")
     args = parser.parse_args()
 
     # Setup logging
     log_level = "DEBUG" if args.verbose else "INFO"
-    logger = setup_logging(log_level=log_level, log_file="stock_importer.log")
+    logger = setup_logging(log_level=log_level, log_file="stock_processor.log")
 
     # Load configuration
     config = load_config("config/settings.json")
@@ -78,6 +71,18 @@ Examples:
         logger.error("No exchanges configured in settings.json")
         sys.exit(1)
 
+    # Initialize API client and exporter
+    api_client = StockAPIClient(api_key=api_key)
+    exporter = CSVExporter(daily_quotes_directory=config.get("daily_quotes_directory", "data/daily_quotes"))
+    processor = CSVProcessor(input_dir=config.get("daily_quotes_directory", "data/daily_quotes"), 
+                             output_dir=config.get("combined_quotes_directory", "data/combined_quotes"))
+
+    if args.concat:
+        logger.info("Combining CSV files into a single file...")
+        combined_file = processor.combine_csv_files()
+        logger.info(f"Combined CSV file created at: {combined_file}")
+        return 0
+    
     # Get date from command-line argument (defaults to None for current date)
     date_stamp = args.date
 
@@ -85,10 +90,6 @@ Examples:
         logger.info(f"Starting stock data import for exchanges: {', '.join(exchanges)} on date: {date_stamp}")
     else:
         logger.info(f"Starting stock data import for exchanges: {', '.join(exchanges)} using current date")
-
-    # Initialize API client and exporter
-    api_client = StockAPIClient(api_key=api_key)
-    exporter = CSVExporter(output_dir=config.get("output_directory", "output"))
 
     # Fetch and export data
     logger.info("Fetching stock quotes from EODData API...")

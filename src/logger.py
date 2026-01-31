@@ -1,4 +1,4 @@
-"""Logging configuration for the stock data importer"""
+"""Logging configuration for the stock data processor"""
 
 import logging
 from pathlib import Path
@@ -13,7 +13,7 @@ def setup_logging(log_level: str = "INFO", log_file: str = None):
         log_file: Optional log file path
     """
     # Create logger
-    logger = logging.getLogger("stock_importer")
+    logger = logging.getLogger("stock_processor")
     logger.setLevel(getattr(logging, log_level.upper()))
 
     # Console handler
