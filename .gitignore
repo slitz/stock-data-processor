@@ -3,7 +3,7 @@
 .env.local
 
 # API Keys and sensitive data
-#config/settings.json
+config/settings.json
 
 # Python
 __pycache__/
