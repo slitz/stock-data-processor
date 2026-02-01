@@ -1,0 +1,10 @@
+{
+  "api_key": "***YOUR_API_KEY_HERE***",
+  "base_url": "https://api.eoddata.com",
+  "exchanges": [
+    "NASDAQ"
+  ],
+  "combined_quotes_directory": "data\\combined_quotes",
+  "daily_quotes_directory": "data\\daily_quotes",
+  "count_of_files_to_keep": 20
+}
