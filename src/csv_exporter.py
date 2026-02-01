@@ -22,12 +22,7 @@ class CSVExporter:
         self.output_dir = Path(daily_quotes_directory)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def export_stock_data(
-        self,
-        exchange: str,
-        data: List[Dict[str, Any]],
-        date_stamp: str,
-    ) -> str:
+    def export_stock_data(self, exchange: str, data: List[Dict[str, Any]], date_stamp: str,) -> str:
         """
         Export stock quote data to a CSV file.
 
@@ -73,11 +68,7 @@ class CSVExporter:
             logger.error(f"Failed to export data for {exchange}: {str(e)}")
             raise
 
-    def export_exchange_data(
-        self,
-        exchange_data: Dict[str, List[Dict[str, Any]]],
-        date_stamp: str
-    ) -> Dict[str, str]:
+    def export_exchange_data(self, exchange_data: Dict[str, List[Dict[str, Any]]], date_stamp: str) -> Dict[str, str]:
         """
         Export exchange quote data to CSV files.
 

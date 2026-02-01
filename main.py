@@ -41,15 +41,14 @@ def main():
         description="Import stock data from EODData API and export to CSV",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Examples:
-  python main.py                           # Use current date
-  python main.py --date 2026-01-24         # Use specific date
-  python main.py --date 2026-01-20 -v      # Verbose mode
+        ``Examples:
+        python main.py                           # Use current date
+        python main.py --date 2026-01-24         # Use specific date
+        python main.py --date 2026-01-20 -v      # Verbose mode``
         """
     )
     parser.add_argument("--date", type=str, default=None, help="Date for quotes in format YYYY-MM-DD (default: current date)")
     parser.add_argument("-v", "--verbose",  action="store_true", help="Enable verbose logging (DEBUG level)")
-    parser.add_argument("--concat", action="store_true", help="Concatenate CSV files")
     args = parser.parse_args()
 
     # Setup logging
@@ -71,17 +70,12 @@ Examples:
         logger.error("No exchanges configured in settings.json")
         sys.exit(1)
 
-    # Initialize API client and exporter
+    # Initialize API client, exporter, and processor
     api_client = StockAPIClient(api_key=api_key)
-    exporter = CSVExporter(daily_quotes_directory=config.get("daily_quotes_directory", "data/daily_quotes"))
-    processor = CSVProcessor(input_dir=config.get("daily_quotes_directory", "data/daily_quotes"), 
-                             output_dir=config.get("combined_quotes_directory", "data/combined_quotes"))
-
-    if args.concat:
-        logger.info("Combining CSV files into a single file...")
-        combined_file = processor.combine_csv_files()
-        logger.info(f"Combined CSV file created at: {combined_file}")
-        return 0
+    exporter = CSVExporter(daily_quotes_directory=config.get("daily_quotes_directory"))
+    processor = CSVProcessor(input_dir=config.get("daily_quotes_directory"), 
+                             output_dir=config.get("combined_quotes_directory"),
+                             count_of_files_to_keep=config.get("count_of_files_to_keep"))
     
     # Get date from command-line argument (defaults to None for current date)
     date_stamp = args.date
@@ -96,21 +90,23 @@ Examples:
     exchange_data = {}
     for exchange in exchanges:
         exchange_data[exchange] = api_client.get_exchange_data(exchange, date_stamp)
+    logger.info("Quotes fetched successfully!")
 
     logger.info("Exporting data to CSV...")
     csv_files = exporter.export_exchange_data(exchange_data, date_stamp)
-
-    # Log results
-    logger.info("Import completed successfully!")
     for exchange, filepath in csv_files.items():
-        logger.info(f"  {exchange}: {filepath}")
+        logger.info(f"{exchange}: data exported to {filepath}")
 
-    print("\n" + "=" * 50)
-    print("Stock Data Import Complete!")
-    print("=" * 50)
-    for exchange, filepath in csv_files.items():
-        print(f"{exchange}: {filepath}")
+    # Process concatenation
+    logger.info("Combining CSV files into a single file...")
+    combined_file = processor.combine_csv_files()
+    logger.info(f"Combined CSV file created at: {combined_file}")
 
+    # Cleanup old files
+    logger.info("Cleaning up old files from input directory...")
+    files_deleted = processor.delete_old_files_from_input_dir()
+    logger.info(f"Deleted {len(files_deleted)} old files from input directory.")
+    return 0
 
 if __name__ == "__main__":
     main()

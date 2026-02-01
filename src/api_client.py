@@ -25,11 +25,7 @@ class StockAPIClient:
         self.base_url = base_url
         self.session = requests.Session()
 
-    def get_exchange_quotes(
-        self,
-        exchange: str,
-        date_stamp: str = None
-    ) -> List[Dict[str, Any]]:
+    def get_exchange_quotes(self, exchange: str, date_stamp: str = None) -> List[Dict[str, Any]]:
         """
         Fetch all stock quotes for a given exchange.
 
@@ -73,11 +69,7 @@ class StockAPIClient:
             logger.error(f"Request failed for exchange {exchange}: {str(e)}")
             return []
 
-    def get_exchange_data(
-        self,
-        exchange: str,
-        date_stamp: str = None
-    ) -> List[Dict[str, Any]]:
+    def get_exchange_data(self, exchange: str, date_stamp: str = None) -> List[Dict[str, Any]]:
         """
         Fetch all stock data for an exchange.
 
