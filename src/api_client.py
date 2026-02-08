@@ -65,9 +65,8 @@ class StockAPIClient:
             logger.info(f"Retrieved {len(data)} quotes from {exchange}")
             return data if isinstance(data, list) else []
 
-        except requests.RequestException as e:
-            logger.error(f"Request failed for exchange {exchange}: {str(e)}")
-            return []
+        except requests.RequestException as e:            
+            return e
 
     def get_exchange_data(self, exchange: str, date_stamp: str = None) -> List[Dict[str, Any]]:
         """

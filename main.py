@@ -90,6 +90,10 @@ def main():
     exchange_data = {}
     for exchange in exchanges:
         exchange_data[exchange] = api_client.get_exchange_data(exchange, date_stamp)
+        if isinstance(exchange_data[exchange], Exception):
+            logger.error(f"Error fetching data for exchange {exchange}: {exchange_data[exchange]}") 
+            return 1
+
     logger.info("Quotes fetched successfully!")
 
     logger.info("Exporting data to CSV...")
