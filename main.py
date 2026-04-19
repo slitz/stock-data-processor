@@ -59,7 +59,7 @@ def main():
     config = load_config("config/settings.json")
 
     # Validate configuration
-    api_key = config.get("api_key")
+    api_key = config.get("api_key") or os.environ.get("API_KEY")
     exchanges = config.get("exchanges", [])
 
     if not api_key:
