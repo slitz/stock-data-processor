@@ -1,0 +1,37 @@
+name: Daily Stock Data Processor
+
+on:
+  schedule:
+    # Runs daily at 9:00 AM UTC (adjust timezone as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  run-main:
+    runs-on: ubuntu-latest  # Use Linux runner (GitHub Actions default)
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'  # Adjust to match your requirements
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run main.py
+      run: python main.py
+
+    # Optional: If you want to commit any changes (e.g., updated data files)
+    # - name: Commit and push changes
+    #   run: |
+    #     git config --local user.email "action@github.com"
+    #     git config --local user.name "GitHub Action"
+    #     git add data/
+    #     git commit -m "Update stock data" || echo "No changes to commit"
+    #     git push
