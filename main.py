@@ -5,11 +5,27 @@ import sys
 import json
 import argparse
 from pathlib import Path
+from datetime import datetime, timedelta
 
 from src.api_client import StockAPIClient
 from src.csv_exporter import CSVExporter
 from src.csv_processor import CSVProcessor
 from src.logger import setup_logging
+
+
+def get_previous_business_day() -> str:
+    """
+    Get the previous business day (Monday to Friday) in YYYY-MM-DD format.
+    
+    Returns:
+        String representing the previous business day.
+    """
+    today = datetime.now().date()
+    current = today
+    while True:
+        current -= timedelta(days=1)
+        if current.weekday() < 5:  # Monday=0 to Friday=4
+            return current.isoformat()
 
 
 def load_config(config_file: str = "config/settings.json") -> dict:
@@ -77,13 +93,15 @@ def main():
                              output_dir=config.get("combined_quotes_directory"),
                              count_of_files_to_keep=config.get("count_of_files_to_keep"))
     
-    # Get date from command-line argument (defaults to None for current date)
+    # Get date from command-line argument (defaults to previous business day)
     date_stamp = args.date
+    if not date_stamp:
+        date_stamp = get_previous_business_day()
 
-    if date_stamp:
+    if args.date:
         logger.info(f"Starting stock data import for exchanges: {', '.join(exchanges)} on date: {date_stamp}")
     else:
-        logger.info(f"Starting stock data import for exchanges: {', '.join(exchanges)} using current date")
+        logger.info(f"Starting stock data import for exchanges: {', '.join(exchanges)} using previous business day: {date_stamp}")
 
     # Fetch and export data
     logger.info("Fetching stock quotes from EODData API...")
