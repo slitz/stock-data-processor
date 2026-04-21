@@ -23,16 +23,16 @@ class CSVProcessor:
             output_dir (str): Directory for the combined output CSV.
             count_of_files_to_keep (int): Number of recent files to keep when culling old files.
         """
-        self.input_dir = input_dir
-        self.output_dir = output_dir
-        self.output_file = os.path.join(self.output_dir, "prices.csv")
+        self.input_dir = Path(input_dir)
+        self.output_dir = Path(output_dir)
+        self.output_file = self.output_dir / "prices.csv"
         self.count_of_files_to_keep = count_of_files_to_keep
 
     def combine_csv_files(self):
         csv_files = [
-            os.path.join(self.input_dir, file)
-            for file in os.listdir(self.input_dir)
-            if file.lower().endswith(".csv")
+            file
+            for file in self.input_dir.iterdir()
+            if file.suffix.lower() == ".csv"
         ]
 
         if not csv_files:
@@ -46,7 +46,7 @@ class CSVProcessor:
         combined = pd.concat(data_frames, ignore_index=True, sort=False)
         combined.to_csv(self.output_file, index=False)
 
-        return self.output_file
+        return str(self.output_file)
     
     def delete_old_files_from_input_dir(self) -> List[Path]:
         base = Path(self.input_dir).expanduser().resolve()

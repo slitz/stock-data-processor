@@ -3,7 +3,7 @@
   "exchanges": [
     "NASDAQ"
   ],
-  "combined_quotes_directory": "data\\combined_quotes",
-  "daily_quotes_directory": "data\\daily_quotes",
+  "combined_quotes_directory": "data/combined_quotes",
+  "daily_quotes_directory": "data/daily_quotes",
   "count_of_files_to_keep": 90
 }
