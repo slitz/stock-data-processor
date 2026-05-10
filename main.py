@@ -7,6 +7,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime, timedelta
 
+from dotenv import load_dotenv
 from src.api_client import StockAPIClient
 from src.csv_exporter import CSVExporter
 from src.csv_processor import CSVProcessor
@@ -71,15 +72,20 @@ def main():
     log_level = "DEBUG" if args.verbose else "INFO"
     logger = setup_logging(log_level=log_level, log_file="stock_processor.log")
 
-    # Load configuration
+    # Load environment variables from .env and configuration
+    load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
     config = load_config("config/settings.json")
 
     # Validate configuration
-    api_key = config.get("api_key") or os.environ.get("API_KEY")
+    api_key = (
+        config.get("api_key")
+        or os.environ.get("API_KEY")
+        or os.environ.get("EODDATA_API_TOKEN")
+    )
     exchanges = config.get("exchanges", [])
 
     if not api_key:
-        logger.error("API key not configured in settings.json")
+        logger.error("API key not configured in settings.json or .env (API_KEY or EODDATA_API_TOKEN)")
         sys.exit(1)
 
     if not exchanges:
